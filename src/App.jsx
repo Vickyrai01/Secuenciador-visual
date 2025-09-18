@@ -4,6 +4,7 @@ import './App.css'
 import AudioPlayer from './components/AudioPlayer.jsx'
 import AudioBpmForm from './components/AudioBpmForm.jsx'
 import AudioBpmInfo from './components/AudioBpmInfo.jsx'
+import CompasCalculator from './components/CompasCalculator.jsx'
 
 function App() {
 
@@ -24,9 +25,10 @@ function App() {
       <AudioBpmForm onSubmit={handleFormSubmit} />
       <AudioBpmInfo audioFile={audioFile} bpm={bpm}/>
       <AudioPlayer audioFile={audioFile} />
+      <CompasCalculator audioFile={audioFile} bpm={bpm} />
 
     </main>
-    
+
   )
 }
 
