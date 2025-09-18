@@ -8,3 +8,9 @@ export function handlePause(audioRef){
         audioRef.current.pause()
     }
 }
+
+export function audioDuration(audioFile) {
+    if (!audioFile) return 0;
+
+}
+

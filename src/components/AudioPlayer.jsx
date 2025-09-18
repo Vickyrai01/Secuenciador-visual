@@ -1,13 +1,11 @@
 import { useRef } from "react"
-import { handlePause, handlePlay } from "../audio/playerLogic"
+import { handlePause, handlePlay } from "../logic/playerLogic"
 
 export default function AudioPlayer({audioFile}){
     const audioRef = useRef(null)
     if (!audioFile) return null
 
-    const audioUrl = typeof audioFile === 'string'
-        ? audioFile
-        : URL.createObjectURL(audioFile);
+    const audioUrl =  URL.createObjectURL(audioFile);
 
     return (
         <div>
