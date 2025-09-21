@@ -1,14 +1,26 @@
-import { calcularCantidadCompases } from "../logic/compasLogic.js"
-import { useAudioDuration } from "../hooks/useAudioDuration.js"
+import { useEffect } from "react";
+import { calcularCantidadCompases } from "../logic/compasLogic.js";
+import { useAudioDuration } from "../hooks/useAudioDuration.js";
 
 // Componente desacoplado, solo muestra resultados
-export default function CompasCalculator({ audioFile, bpm, beatsPerCompas = 4 }) {
-  const { duration, audioRef } = useAudioDuration(audioFile)
-  const compasCount = calcularCantidadCompases(duration, bpm, beatsPerCompas)
+export default function CompasCalculator({
+  audioFile,
+  bpm,
+  beatsPerCompas = 4,
+  setAudioDuration,
+}) {
+  const { duration, audioRef } = useAudioDuration(audioFile);
+  const compasCount = calcularCantidadCompases(duration, bpm, beatsPerCompas);
 
   // Permite tanto File como string (ruta)
-  const audioSrc = audioFile instanceof File ? URL.createObjectURL(audioFile) : audioFile
+  const audioSrc =
+    audioFile instanceof File ? URL.createObjectURL(audioFile) : audioFile;
 
+  useEffect(() => {
+    if (duration !== null && setAudioDuration) {
+      setAudioDuration(duration);
+    }
+  }, [duration, setAudioDuration]);
   return (
     <section>
       {/* Audio oculto para poder leer duración */}
@@ -22,5 +34,5 @@ export default function CompasCalculator({ audioFile, bpm, beatsPerCompas = 4 })
         </div>
       )}
     </section>
-  )
+  );
 }

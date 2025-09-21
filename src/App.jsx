@@ -1,35 +1,24 @@
-import { useState } from 'react'
-//import { calculateCompas } from 'logic/compasLogic.js'
-import './App.css'
-import AudioPlayer from './components/AudioPlayer.jsx'
-import AudioBpmForm from './components/AudioBpmForm.jsx'
-import AudioBpmInfo from './components/AudioBpmInfo.jsx'
-import CompasCalculator from './components/CompasCalculator.jsx'
+import { useState } from "react";
+import "./App.css";
+import AudioBpmForm from "./components/AudioBpmForm.jsx";
+import Sequencer from "./components/sequencer/Sequencer.jsx";
 
 function App() {
+  const [audioFile, setAudioFile] = useState(null);
+  const [bpm, setBpm] = useState("");
 
-  const [audioFile, setAudioFile] = useState(null)
-  const [bpm, setBpm] = useState('')
-  //const [audioDuration, setAudioDuration] = useState(null);
-  //const [compassCount, setCompassCount] = useState(null);
- 
   const handleFormSubmit = (file, bpmValue) => {
-    setAudioFile(file)
-    setBpm(bpmValue)
-  }
+    setAudioFile(file);
+    setBpm(bpmValue);
+  };
 
   return (
     <main>
       <h1>Secuenciador Visual</h1>
-      <h2>Selecciona archivo y Bpm deseado</h2>
       <AudioBpmForm onSubmit={handleFormSubmit} />
-      <AudioBpmInfo audioFile={audioFile} bpm={bpm}/>
-      <AudioPlayer audioFile={audioFile} />
-      <CompasCalculator audioFile={audioFile} bpm={bpm} />
-
+      <Sequencer audioFile={audioFile} bpm={bpm} />
     </main>
-
-  )
+  );
 }
 
-export default App
+export default App;
