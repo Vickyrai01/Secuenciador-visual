@@ -13,7 +13,7 @@ import VolumeUpRounded from "@mui/icons-material/VolumeUpRounded";
 import VolumeDownRounded from "@mui/icons-material/VolumeDownRounded";
 import formatDuration from "../../logic/audioPlayerLogic.js";
 
-const Widget = styled("div")(({ theme }) => ({
+const Widget = styled("div")(() => ({
   padding: 16,
   borderRadius: 16,
   width: 343,
