@@ -1,26 +1,26 @@
-import { useState } from 'react'
-import './App.css'
-import AudioUploader from './components/AudioUploader.jsx'
-import BpmInput from './components/BpmInput.jsx'
-import AudioPlayer from './components/AudioPlayer.jsx'
+import { useState } from "react";
+import "./App.css";
+import AudioBpmForm from "./components/AudioBpmForm.jsx";
+import Sequencer from "./components/sequencer/Sequencer.jsx";
+import AudioPlayerMui from "./components/sequencer/AudioPlayerMui.jsx";
+
 
 function App() {
+  const [audioFile, setAudioFile] = useState(null);
+  const [bpm, setBpm] = useState("");
 
-  const [audioFile, setAudioFile] = useState('public/assets/Coldplay-yellow.mp3')
-  const [bpm, setBpm] = useState('')
+  const handleFormSubmit = (file, bpmValue) => {
+    setAudioFile(file);
+    setBpm(bpmValue);
+  };
 
   return (
     <main>
-      <AudioUploader onFileChange = {setAudioFile} />
-      <BpmInput onBpmChange = {setBpm}/>
-      <div>
-        <p>Archivo seleccionado: {audioFile ? audioFile.name : 'Ninguno'}</p>
-        <p>BPM: {bpm}</p>
-      </div>
-      <AudioPlayer audioFile = {audioFile}/>
-
+      <h1>Secuenciador Visual</h1>
+      <AudioBpmForm onSubmit={handleFormSubmit} />
+      <Sequencer audioFile={audioFile} bpm={bpm} />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
