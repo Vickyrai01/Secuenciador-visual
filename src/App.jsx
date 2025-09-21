@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./App.css";
 import AudioBpmForm from "./components/AudioBpmForm.jsx";
 import Sequencer from "./components/sequencer/Sequencer.jsx";
+import AudioPlayerMui from "./components/sequencer/AudioPlayerMui.jsx";
+
 
 function App() {
   const [audioFile, setAudioFile] = useState(null);
