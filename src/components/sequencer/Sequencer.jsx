@@ -1,13 +1,13 @@
 import AudioPlayerMui from "./AudioPlayerMui.jsx";
-
+import RenderGrid from "./RenderGrid.jsx";
 
 export default function Sequencer({ audioFile, bpm }) {
-    console.log("audioFile:", audioFile, "bpm:", bpm);
-    if (!audioFile || !bpm) return null;
+  if (!audioFile || !bpm) return null;
 
-    return (
+  return (
     <div>
-        <AudioPlayerMui audioFile={audioFile}/>
+      <AudioPlayerMui audioFile={audioFile} />
+      <RenderGrid />
     </div>
   );
 }
