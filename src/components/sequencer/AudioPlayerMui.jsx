@@ -90,11 +90,17 @@ export default function AudioPlayerMui({ audioFile }) {
   // Adelanta/retrocede 10s
   const handleRewind = () => {
     if (!audioRef.current) return;
-    audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+    audioRef.current.currentTime = Math.max(
+      0,
+      audioRef.current.currentTime - 10,
+    );
   };
   const handleForward = () => {
     if (!audioRef.current) return;
-    audioRef.current.currentTime = Math.min(duration, audioRef.current.currentTime + 10);
+    audioRef.current.currentTime = Math.min(
+      duration,
+      audioRef.current.currentTime + 10,
+    );
   };
 
   if (!audioUrl) return null;
@@ -126,15 +132,32 @@ export default function AudioPlayerMui({ audioFile }) {
             "& .MuiSlider-rail": { opacity: 0.28 },
           }}
         />
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: -2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mt: -2,
+          }}
+        >
           <TinyText>{formatDuration(currentTime)}</TinyText>
           <TinyText>-{formatDuration(duration - currentTime)}</TinyText>
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mt: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mt: 2,
+          }}
+        >
           <IconButton aria-label="previous" onClick={handleRewind}>
             <FastRewindRounded fontSize="large" />
           </IconButton>
-          <IconButton aria-label={isPlaying ? "pause" : "play"} onClick={() => setIsPlaying(p => !p)}>
+          <IconButton
+            aria-label={isPlaying ? "pause" : "play"}
+            onClick={() => setIsPlaying((p) => !p)}
+          >
             {isPlaying ? (
               <PauseRounded sx={{ fontSize: "2.5rem" }} />
             ) : (
@@ -145,7 +168,12 @@ export default function AudioPlayerMui({ audioFile }) {
             <FastForwardRounded fontSize="large" />
           </IconButton>
         </Box>
-        <Stack spacing={2} direction="row" sx={{ mb: 1, px: 1 }} alignItems="center">
+        <Stack
+          spacing={2}
+          direction="row"
+          sx={{ mb: 1, px: 1 }}
+          alignItems="center"
+        >
           <VolumeDownRounded />
           <Slider
             aria-label="Volume"
@@ -155,7 +183,11 @@ export default function AudioPlayerMui({ audioFile }) {
             onChange={handleVolumeChange}
             sx={{
               color: "rgba(0,0,0,0.87)",
-              "& .MuiSlider-thumb": { width: 16, height: 16, backgroundColor: "#fff" },
+              "& .MuiSlider-thumb": {
+                width: 16,
+                height: 16,
+                backgroundColor: "#fff",
+              },
             }}
           />
           <VolumeUpRounded />
