@@ -1,36 +1,11 @@
-const row = 8;
-const col = 8;
+import { validateRowCol, createGrid, mapGrid } from "../../logic/gridLogic.jsx";
+import { useState } from "react";
 
-const createGrid = () =>
-  Array.from({ length: row }, () => Array.from({ length: col }, () => false));
-const grid = createGrid();
+export default function RenderGrid({ type, row = 8, col = 8 }) {
 
-const sectionColors = {
-  INTRO: "#e0bbff",
-  ESTRIBILLO: "#6ccdf3ff",
-  VERSO: "#cc62d8ff",
-  PUENTE: "#ffbbbc",
-  // etc.
-};
+  const [grid, setGrid] = useState(() => createGrid(row, col));
+  
+  validateRowCol(row, col);
+  return <div>{mapGrid(grid, type, setGrid)}</div>;
 
-export default function RenderGrid({ color }) {
-  const mapGrid = () => {
-    return grid.map((row, rowIndex) => (
-      <div key={rowIndex} style={{ display: "flex" }}>
-        {row.map((cell, columIndex) => (
-          <div
-            key={columIndex}
-            style={{
-              width: "20px",
-              height: "20px",
-              border: "1px solid black",
-              backgroundColor: cell ? "black" : sectionColors[color] || "white",
-            }}
-          ></div>
-        ))}
-      </div>
-    ));
-  };
-
-  return <div>{mapGrid()}</div>;
 }
