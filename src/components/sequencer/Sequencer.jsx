@@ -7,7 +7,7 @@ export default function Sequencer({ audioFile, bpm }) {
   return (
     <div>
       <AudioPlayerMui audioFile={audioFile} />
-      <RenderGrid />
+      <RenderGrid color="ESTRIBILLO"/>
     </div>
   );
 }
