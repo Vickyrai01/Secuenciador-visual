@@ -1,4 +1,4 @@
-import { validateRowCol, createGrid, mapGrid } from "../../logic/gridLogic.jsx";
+import { validateRowCol, createGrid, mapGrid } from "../../../logic/gridLogic.jsx";
 import { useState } from "react";
 
 export default function RenderGrid({ type, row = 8, col = 8 }) {

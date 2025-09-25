@@ -25,7 +25,7 @@ const sectionColorsDark = {
   // etc.
 };
 
-export function mapGrid(grid, type, setGrid) {
+export function mapGrid({grid, type}, setGrid) {
     return grid.map((row, rowIndex) => (
       <div key={rowIndex} style={{ display: "flex" }}>
         {row.map((cell, columIndex) => (
