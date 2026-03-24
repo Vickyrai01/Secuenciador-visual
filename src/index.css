@@ -1,69 +1,52 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --bg-main: #121212;
+  --bg-surface: #1e1e1e;
+  --bg-surface-elevated: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  
+  --color-accent: #00d2ff;
+  --color-accent-glow: rgba(0, 210, 255, 0.4);
+  
+  --color-play: #4ade80;
+  --color-pause: #fbbf24;
+  
+  /* Secciones Colors (Dark/Neon) */
+  --color-intro: #8b5cf6;
+  --color-verso: #3b82f6;
+  --color-estro: #ec4899;
+  --color-puente: #f59e0b;
+  --color-solo: #10b981;
+  --color-coda: #f43f5e;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+* {
+  box-sizing: border-box;
 }
 
-button,
-input {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+/* Custom Scrollbar for DAW feeling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
-button:hover {
-  border-color: #646cff;
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+::-webkit-scrollbar-thumb {
+  background: var(--bg-surface-elevated);
+  border-radius: 5px;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
