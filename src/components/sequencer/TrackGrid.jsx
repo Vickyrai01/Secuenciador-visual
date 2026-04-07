@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 
 const CELL_WIDTH = 40;
 const CELL_HEIGHT = 60;
 
-export default function TrackGrid({ sections, rhythms, currentStep, pixelPosition, onCellClick }) {
+export default function TrackGrid({ sections, rhythms, currentStep, pixelPosition, onCellClick, onCellTextChange }) {
+  const [editingCell, setEditingCell] = useState(null); // { secIdx, stepIdx }
   const totalBeats = sections.reduce((acc, sec) => acc + sec.length, 0);
 
   // Determinamos en qué sección está el Playhead y cuál es su pixel continuo DENTRO de esa sección
@@ -93,22 +94,34 @@ export default function TrackGrid({ sections, rhythms, currentStep, pixelPositio
                     {/* Celdas activas/inactivas polícromas */}
                     {rowCells.map((cellState, cellIdx) => {
                       const stepIdx = (rowIdx * 10) + cellIdx;
-                      // cellState ahora trae null (vacío) o 'r1', 'r2' (ID del ritmo)
-                      const activeRhythm = cellState ? rhythms.find(r => r.id === cellState) : null;
+                      
+                      // Interpretar objeto de la celda
+                      const cellObj = typeof cellState === 'object' && cellState !== null ? cellState : { rhythmId: cellState, text: '' };
+                      const activeRhythmId = cellObj.rhythmId;
+                      const cellText = cellObj.text || '';
+                      
+                      const activeRhythm = activeRhythmId ? rhythms.find(r => r.id === activeRhythmId) : null;
                       const isActive = !!activeRhythm;
                       const bgColor = isActive ? activeRhythm.color : 'rgba(0,0,0,0.2)';
                       
                       const isPlayingNow = isThisSectionActive && (currentStep - offsetBeats) === stepIdx;
+                      const isEditingThisCell = editingCell && editingCell.secIdx === secIdx && editingCell.stepIdx === stepIdx;
                       
                       return (
                         <Box 
                           key={stepIdx}
-                          onClick={() => onCellClick(secIdx, stepIdx)}
+                          onDoubleClick={() => setEditingCell({ secIdx, stepIdx })}
+                          onClick={() => {
+                             if (!isEditingThisCell) onCellClick(secIdx, stepIdx);
+                          }}
                           sx={{
                             width: CELL_WIDTH,
                             minWidth: CELL_WIDTH,
                             flexShrink: 0,
                             boxSizing: 'border-box',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                             height: '100%',
                             borderRight: '1px solid var(--bg-surface-elevated)',
                             borderTop: '1px solid rgba(255,255,255,0.1)',
@@ -123,7 +136,39 @@ export default function TrackGrid({ sections, rhythms, currentStep, pixelPositio
                             },
                             transition: 'opacity 0.1s'
                           }}
-                        />
+                        >
+                          {isEditingThisCell ? (
+                            <input 
+                              autoFocus
+                              maxLength={2}
+                              value={cellText}
+                              onChange={e => onCellTextChange(secIdx, stepIdx, e.target.value)}
+                              onBlur={() => setEditingCell(null)}
+                              onKeyDown={e => e.key === 'Enter' && setEditingCell(null)}
+                              style={{ 
+                                width: '100%', 
+                                height: '100%', 
+                                textAlign: 'center', 
+                                background: 'transparent', 
+                                border: 'none', 
+                                color: '#ffffff', 
+                                fontSize: '14px', 
+                                fontWeight: 'bold',
+                                outline: 'none'
+                              }}
+                            />
+                          ) : (
+                            <span style={{ 
+                              color: 'rgba(255,255,255,0.9)', 
+                              fontWeight: 'bold', 
+                              fontSize: '14px',
+                              letterSpacing: '1px',
+                              pointerEvents: 'none'
+                            }}>
+                              {cellText}
+                            </span>
+                          )}
+                        </Box>
                       );
                     })}
                  </Box>

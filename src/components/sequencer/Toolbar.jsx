@@ -1,9 +1,11 @@
 import React, { useRef } from 'react';
-import { Box, IconButton, Typography, Slider, Button } from '@mui/material';
+import { Box, IconButton, Typography, Button } from '@mui/material';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import PauseRounded from '@mui/icons-material/PauseRounded';
 import StopRounded from '@mui/icons-material/StopRounded';
 import FileUploadRounded from '@mui/icons-material/FileUploadRounded';
+import DownloadRounded from '@mui/icons-material/DownloadRounded';
+import CreateNewFolderRounded from '@mui/icons-material/CreateNewFolderRounded';
 
 export default function Toolbar({ 
   isPlaying, 
@@ -13,9 +15,12 @@ export default function Toolbar({
   onBpmChange, 
   onAudioUpload,
   currentTime,
-  duration
+  duration,
+  onExportProject,
+  onImportProject
 }) {
   const fileInputRef = useRef(null);
+  const jsonInputRef = useRef(null);
 
   const handleFileClick = () => {
     if (fileInputRef.current) {
@@ -87,25 +92,58 @@ export default function Toolbar({
         </IconButton>
       </Box>
 
-      {/* BPM Input */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Typography variant="subtitle2" sx={{ color: 'var(--text-secondary)' }}>BPM:</Typography>
-        <input 
-          type="number" 
-          value={bpm}
-          onChange={(e) => onBpmChange(e.target.value)}
-          style={{ 
-            width: '60px', 
-            background: 'var(--bg-main)', 
-            border: '1px solid var(--bg-surface-elevated)',
-            color: 'var(--color-accent)',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            outline: 'none'
-          }} 
-        />
+      {/* BPM Input y Extras de UI */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+        
+        {/* Controles del Proyecto JSON */}
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <input
+            type="file"
+            accept=".json"
+            style={{ display: 'none' }}
+            ref={jsonInputRef}
+            onChange={(e) => {
+              if (e.target.files?.[0]) onImportProject(e.target.files[0]);
+              e.target.value = ''; // Resetear p/ poder cargar el mismo de nuevo
+            }}
+          />
+          <Button 
+            size="small"
+            startIcon={<CreateNewFolderRounded fontSize="small" />}
+            onClick={() => jsonInputRef.current?.click()}
+            sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--text-primary)', bgcolor: 'rgba(255,255,255,0.05)' }, textTransform: 'none' }}
+          >
+            Abrir
+          </Button>
+          <Button 
+            size="small"
+            startIcon={<DownloadRounded fontSize="small" />}
+            onClick={onExportProject}
+            sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--color-accent)', bgcolor: 'rgba(255,255,255,0.05)' }, textTransform: 'none' }}
+          >
+            Guardar JSON
+          </Button>
+        </Box>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="subtitle2" sx={{ color: 'var(--text-secondary)' }}>BPM:</Typography>
+          <input 
+            type="number" 
+            value={bpm}
+            onChange={(e) => onBpmChange(e.target.value)}
+            style={{ 
+              width: '60px', 
+              background: 'var(--bg-main)', 
+              border: '1px solid var(--bg-surface-elevated)',
+              color: 'var(--color-accent)',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              outline: 'none'
+            }} 
+          />
+        </Box>
       </Box>
     </Box>
   );

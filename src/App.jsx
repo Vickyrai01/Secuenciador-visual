@@ -7,7 +7,7 @@ import RhythmPalette from "./components/sequencer/RhythmPalette.jsx";
 
 // Un AudioPlayer invisible que maneja la lógica
 const HiddenAudioPlayer = React.memo(function HiddenAudioPlayer({ src, isPlaying, onTimeUpdate, onDurationLoaded, onEnded, stopTrigger }) {
-// ... sin cambios en el audio player
+  // ... sin cambios en el audio player
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -67,8 +67,8 @@ function App() {
 
   // Estado global de ritmos (paleta con pattern de 8 pasos para "1 Y 2 Y 3 Y 4 Y", con 3 filas: HH, SD, BD)
   const defaultPattern = Array(8).fill(false);
-  const defaultGrid = () => [ [...defaultPattern], [...defaultPattern], [...defaultPattern] ];
-  
+  const defaultGrid = () => [[...defaultPattern], [...defaultPattern], [...defaultPattern]];
+
   const [rhythms, setRhythms] = useState([
     { id: 'r1', name: 'RITMO 1', color: '#1db954', pattern: defaultGrid() },
     { id: 'r2', name: 'RITMO 2', color: '#d81b60', pattern: defaultGrid() },
@@ -83,7 +83,7 @@ function App() {
     // generar color aleatorio saturado y oscuro estilo neón p/ el tema DAW
     const hue = Math.floor(Math.random() * 360);
     const newColor = `hsl(${hue}, 80%, 60%)`;
-    
+
     setRhythms(prev => [...prev, { id: newId, name: `RITMO ${prev.length + 1}`, color: newColor, pattern: defaultGrid() }]);
     setActiveRhythmId(newId);
   };
@@ -114,23 +114,44 @@ function App() {
     { name: "PUENTE", color: "var(--color-puente)", length: defaultLength, activeGrid: Array(defaultLength).fill(null) },
   ]);
 
-  // Seeding inicial p/ testing visual con IDs de ritmo
+  // Efecto p/ cargar desde LocalStorage AL INICIO
   useEffect(() => {
-    setSections(prev => {
-      const copy = [...prev];
-      if (copy[0].activeGrid.length >= 4) {
-         copy[0].activeGrid[0] = 'r1';
-         copy[0].activeGrid[2] = 'r2';
+    const draft = localStorage.getItem('visualSequencerDraft');
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        if (parsed.sections) setSections(parsed.sections);
+        if (parsed.rhythms) setRhythms(parsed.rhythms);
+        if (parsed.bpm) setBpm(parsed.bpm);
+      } catch (e) {
+        console.error("No se pudo cargar el borrador local", e);
       }
-      if (copy[1].activeGrid.length >= 8) {
-         copy[1].activeGrid[1] = 'r3';
-         copy[1].activeGrid[3] = 'r3';
-         copy[1].activeGrid[5] = 'r4';
-         copy[1].activeGrid[7] = 'r4';
-      }
-      return copy;
-    });
+    } else {
+      // Seeding inicial p/ testing visual solo la primera vez que entra
+      setSections(prev => {
+        const copy = [...prev];
+        if (copy[0].activeGrid.length >= 4) {
+          copy[0].activeGrid[0] = { rhythmId: 'r1', text: '' };
+          copy[0].activeGrid[2] = { rhythmId: 'r2', text: 'FX' };
+        }
+        if (copy[1].activeGrid.length >= 8) {
+          copy[1].activeGrid[1] = { rhythmId: 'r3', text: '' };
+          copy[1].activeGrid[3] = { rhythmId: 'r3', text: '' };
+          copy[1].activeGrid[5] = { rhythmId: 'r4', text: '' };
+          copy[1].activeGrid[7] = { rhythmId: 'r4', text: '' };
+        }
+        return copy;
+      });
+    }
   }, []);
+
+  // Efecto p/ Auto-guardar en LocalStorage ante cada cambio
+  useEffect(() => {
+    // Si todavía no se inicializaron partes de la data, no romperla
+    if (sections.length > 0) {
+      localStorage.setItem('visualSequencerDraft', JSON.stringify({ sections, rhythms, bpm }));
+    }
+  }, [sections, rhythms, bpm]);
 
   const handleTogglePlay = () => {
     if (!audioFile) {
@@ -164,15 +185,44 @@ function App() {
       const copy = [...prev];
       const secCopy = { ...copy[secIdx] };
       const newGrid = [...secCopy.activeGrid];
-      
+
       const currentCellVal = newGrid[stepIdx];
-      // Si ya tiene el mismo ritmo, lo borra. Si no, o si está vacía, la pinta del nuevo ritmo.
-      if (currentCellVal === activeRhythmId) {
+      const currentRhythmId = typeof currentCellVal === 'object' && currentCellVal !== null ? currentCellVal.rhythmId : currentCellVal;
+      const currentText = typeof currentCellVal === 'object' && currentCellVal !== null ? currentCellVal.text : '';
+
+      // Si ya tiene el mismo ritmo, lo borra. Si no, o si está vacía, la pinta del nuevo ritmo conservando el texto
+      if (currentRhythmId === activeRhythmId) {
+        if (currentText) {
+          newGrid[stepIdx] = { rhythmId: null, text: currentText };
+        } else {
+          newGrid[stepIdx] = null;
+        }
+      } else {
+        newGrid[stepIdx] = { rhythmId: activeRhythmId, text: currentText };
+      }
+
+      secCopy.activeGrid = newGrid;
+      copy[secIdx] = secCopy;
+      return copy;
+    });
+  };
+
+  const handleCellTextChange = (secIdx, stepIdx, newText) => {
+    setSections(prev => {
+      const copy = [...prev];
+      const secCopy = { ...copy[secIdx] };
+      const newGrid = [...secCopy.activeGrid];
+
+      const currentCellVal = newGrid[stepIdx];
+      const currentRhythmId = typeof currentCellVal === 'object' && currentCellVal !== null ? currentCellVal.rhythmId : currentCellVal;
+
+      if (!newText && !currentRhythmId) {
         newGrid[stepIdx] = null;
       } else {
-        newGrid[stepIdx] = activeRhythmId;
+        // Guardamos el texto en mayúsculas y max 2 caracteres
+        newGrid[stepIdx] = { rhythmId: currentRhythmId, text: newText.substring(0, 2).toUpperCase() };
       }
-      
+
       secCopy.activeGrid = newGrid;
       copy[secIdx] = secCopy;
       return copy;
@@ -193,14 +243,14 @@ function App() {
       const copy = [...prev];
       const sec = copy[secIdx];
       const newLen = Math.max(1, sec.length + delta);
-      
+
       let newGrid = [...sec.activeGrid];
       if (newLen > sec.length) {
-         newGrid = newGrid.concat(Array(newLen - sec.length).fill(null));
+        newGrid = newGrid.concat(Array(newLen - sec.length).fill(null));
       } else {
-         newGrid = newGrid.slice(0, newLen);
+        newGrid = newGrid.slice(0, newLen);
       }
-      
+
       copy[secIdx] = { ...sec, length: newLen, activeGrid: newGrid };
       return copy;
     });
@@ -214,9 +264,39 @@ function App() {
     });
   };
 
+  const handleExportProject = () => {
+    const data = { sections, rhythms, bpm };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mi_secuencia.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportProject = (file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        if (parsed.sections) setSections(parsed.sections);
+        if (parsed.rhythms) setRhythms(parsed.rhythms);
+        if (parsed.bpm) setBpm(parsed.bpm);
+        alert("Proyecto cargado exitosamente.");
+      } catch (err) {
+        alert("Error: El archivo .json elegido no es un proyecto válido o está corrupto.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <div className="app-container">
-      <HiddenAudioPlayer 
+      <HiddenAudioPlayer
         src={audioSrc}
         isPlaying={isPlaying && audioFile}
         stopTrigger={stopTrigger}
@@ -227,9 +307,9 @@ function App() {
           setCurrentTime(0);
         }}
       />
-      
+
       <header className="daw-header">
-        <Toolbar 
+        <Toolbar
           isPlaying={isPlaying}
           onTogglePlay={handleTogglePlay}
           onStop={handleStop}
@@ -238,11 +318,13 @@ function App() {
           onAudioUpload={setAudioFile}
           currentTime={currentTime}
           duration={duration}
+          onExportProject={handleExportProject}
+          onImportProject={handleImportProject}
         />
       </header>
-      
+
       <main className="daw-workspace">
-        <RhythmPalette 
+        <RhythmPalette
           rhythms={rhythms}
           activeRhythmId={activeRhythmId}
           onSelectRhythm={setActiveRhythmId}
@@ -251,24 +333,25 @@ function App() {
           onChangeRhythmColor={handleChangeRhythmColor}
           onToggleRhythmStep={handleToggleRhythmStep}
         />
-        
+
         <div className="daw-main" style={{ flex: 1, overflow: 'hidden' }}>
           <div className="track-list-container">
-            <TrackList 
-              sections={sections} 
-              onAddSection={handleAddSection} 
+            <TrackList
+              sections={sections}
+              onAddSection={handleAddSection}
               onChangeLength={handleChangeSectionLength}
               onChangeName={handleChangeSectionName}
             />
           </div>
           <div className="grid-container">
-             <TrackGrid 
-               sections={sections} 
-               rhythms={rhythms}
-               currentStep={currentStep} 
-               pixelPosition={pixelPosition} 
-               onCellClick={handleCellClick} 
-             />
+            <TrackGrid
+              sections={sections}
+              rhythms={rhythms}
+              currentStep={currentStep}
+              pixelPosition={pixelPosition}
+              onCellClick={handleCellClick}
+              onCellTextChange={handleCellTextChange}
+            />
           </div>
         </div>
       </main>
