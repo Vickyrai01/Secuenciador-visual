@@ -104,6 +104,30 @@ function App() {
     }));
   };
 
+  const handleDeleteRhythm = (id) => {
+    // Si queremos eliminar un ritmo, limpiamos también la grilla de aquellos cuadraditos que lo contenían
+    setSections(prev => prev.map(sec => {
+      const newGrid = sec.activeGrid.map(cellVal => {
+        const rhythmId = typeof cellVal === 'object' && cellVal !== null ? cellVal.rhythmId : cellVal;
+        const text = typeof cellVal === 'object' && cellVal !== null ? cellVal.text : '';
+        if (rhythmId === id) {
+          return text ? { rhythmId: null, text } : null;
+        }
+        return cellVal;
+      });
+      return { ...sec, activeGrid: newGrid };
+    }));
+
+    setRhythms(prev => {
+      const remaining = prev.filter(r => r.id !== id);
+      if (id === activeRhythmId) {
+        // Asignamos otro que quede disponible, si no queda nada, setea null
+        setActiveRhythmId(remaining.length > 0 ? remaining[0].id : null);
+      }
+      return remaining;
+    });
+  };
+
 
   // Estado para la estructura de la canción escalonada (mapa secuencial)
   const defaultLength = 8;
@@ -176,7 +200,7 @@ function App() {
 
   // Posición continua en píxeles para el Playhead
   const pixelPosition = useMemo(() => {
-    return (currentTime / stepDuration) * 40; // 40 es CELL_WIDTH
+    return (currentTime / stepDuration) * 48; // 48 es CELL_WIDTH
   }, [currentTime, stepDuration]);
 
   // Pinchamos o borramos con la herramienta activa
@@ -332,6 +356,7 @@ function App() {
           onChangeRhythmName={handleChangeRhythmName}
           onChangeRhythmColor={handleChangeRhythmColor}
           onToggleRhythmStep={handleToggleRhythmStep}
+          onDeleteRhythm={handleDeleteRhythm}
         />
 
         <div className="daw-main" style={{ flex: 1, overflow: 'hidden' }}>

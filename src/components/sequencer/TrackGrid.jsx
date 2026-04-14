@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 
-const CELL_WIDTH = 40;
-const CELL_HEIGHT = 60;
+const CELL_WIDTH = 48;
+const CELL_HEIGHT = 72;
 
 export default function TrackGrid({ sections, rhythms, currentStep, pixelPosition, onCellClick, onCellTextChange }) {
   const [editingCell, setEditingCell] = useState(null); // { secIdx, stepIdx }
