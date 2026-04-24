@@ -60,6 +60,22 @@
   }
 }
 
+/* Force Landscape via CSS Rotation */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  body {
+    overflow: hidden;
+  }
+  .app-container {
+    width: 100vh !important;
+    height: 100vw !important;
+    position: absolute;
+    top: -100vw;
+    left: 0;
+    transform: rotate(90deg);
+    transform-origin: bottom left;
+    overflow: hidden;
+  }
+}
 
 /* Right content for grid */
 .grid-container {

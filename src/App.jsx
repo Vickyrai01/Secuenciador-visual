@@ -203,9 +203,9 @@ function App() {
     return Math.floor(currentTime / stepDuration);
   }, [currentTime, stepDuration]);
 
-  // Posición continua en píxeles para el Playhead
-  const pixelPosition = useMemo(() => {
-    return (currentTime / stepDuration) * 48; // 48 es CELL_WIDTH
+  // Posición continua en steps para el Playhead
+  const currentStepFloat = useMemo(() => {
+    return currentTime / stepDuration;
   }, [currentTime, stepDuration]);
 
   // Pinchamos o borramos con la herramienta activa
@@ -400,13 +400,14 @@ function App() {
               sections={sections}
               rhythms={rhythms}
               currentStep={currentStep}
-              pixelPosition={pixelPosition}
+              currentStepFloat={currentStepFloat}
               onCellClick={handleCellClick}
               onCellTextChange={handleCellTextChange}
             />
           </div>
         </div>
       </main>
+
     </div>
   );
 }
