@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import { Drawer, useMediaQuery, useTheme } from '@mui/material';
 import "./App.css";
 import Toolbar from "./components/sequencer/Toolbar.jsx";
 import TrackList from "./components/sequencer/TrackList.jsx";
@@ -48,6 +49,10 @@ function App() {
   const [stopTrigger, setStopTrigger] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
   // Memorizar y limpiar el Blob URL para no recrearlo en cada render
   const audioSrc = useMemo(() => {
@@ -344,20 +349,42 @@ function App() {
           duration={duration}
           onExportProject={handleExportProject}
           onImportProject={handleImportProject}
+          onOpenPalette={() => setIsPaletteOpen(true)}
+          isMobile={isMobile}
         />
       </header>
 
       <main className="daw-workspace">
-        <RhythmPalette
-          rhythms={rhythms}
-          activeRhythmId={activeRhythmId}
-          onSelectRhythm={setActiveRhythmId}
-          onAddRhythm={handleAddRhythm}
-          onChangeRhythmName={handleChangeRhythmName}
-          onChangeRhythmColor={handleChangeRhythmColor}
-          onToggleRhythmStep={handleToggleRhythmStep}
-          onDeleteRhythm={handleDeleteRhythm}
-        />
+        {isMobile ? (
+          <Drawer
+            anchor="left"
+            open={isPaletteOpen}
+            onClose={() => setIsPaletteOpen(false)}
+            sx={{ '& .MuiDrawer-paper': { width: '85%', maxWidth: '350px', bgcolor: 'var(--bg-main)' }, zIndex: 1200 }}
+          >
+            <RhythmPalette
+              rhythms={rhythms}
+              activeRhythmId={activeRhythmId}
+              onSelectRhythm={setActiveRhythmId}
+              onAddRhythm={handleAddRhythm}
+              onChangeRhythmName={handleChangeRhythmName}
+              onChangeRhythmColor={handleChangeRhythmColor}
+              onToggleRhythmStep={handleToggleRhythmStep}
+              onDeleteRhythm={handleDeleteRhythm}
+            />
+          </Drawer>
+        ) : (
+          <RhythmPalette
+            rhythms={rhythms}
+            activeRhythmId={activeRhythmId}
+            onSelectRhythm={setActiveRhythmId}
+            onAddRhythm={handleAddRhythm}
+            onChangeRhythmName={handleChangeRhythmName}
+            onChangeRhythmColor={handleChangeRhythmColor}
+            onToggleRhythmStep={handleToggleRhythmStep}
+            onDeleteRhythm={handleDeleteRhythm}
+          />
+        )}
 
         <div className="daw-main" style={{ flex: 1, overflow: 'hidden' }}>
           <div className="track-list-container">

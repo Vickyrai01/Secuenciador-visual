@@ -17,6 +17,15 @@
   padding: 0 20px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   z-index: 100;
+  overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+  .daw-header {
+    height: auto;
+    min-height: 60px;
+    padding: 10px 10px;
+  }
 }
 
 .daw-workspace {
@@ -42,7 +51,15 @@
   overflow-y: auto;
   z-index: 2;
   box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+  transition: width 0.3s;
 }
+
+@media (max-width: 900px) {
+  .track-list-container {
+    width: 120px;
+  }
+}
+
 
 /* Right content for grid */
 .grid-container {

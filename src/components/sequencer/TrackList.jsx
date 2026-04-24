@@ -15,7 +15,7 @@ export default function TrackList({ sections, onAddSection, onChangeLength, onCh
           <Box 
             key={idx} 
             sx={{ 
-              height: rowCount * 60, 
+              height: rowCount * 72, 
               display: 'flex', 
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -35,14 +35,16 @@ export default function TrackList({ sections, onAddSection, onChangeLength, onCh
                 color: 'var(--text-primary)',
                 fontSize: '0.875rem',
                 outline: 'none',
-                width: '100px',
-                fontFamily: 'inherit'
+                width: '100%', /* Changed to 100% to fit */
+                maxWidth: '100px', /* Keeps original max width */
+                fontFamily: 'inherit',
+                textOverflow: 'ellipsis'
               }}
             />
             
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-               <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
-                  {sec.length} comp.
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+               <Typography variant="caption" sx={{ color: 'var(--text-secondary)', fontSize: { xs: '0.65rem', md: '0.75rem' } }}>
+                  {sec.length} cp.
                </Typography>
                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <span 

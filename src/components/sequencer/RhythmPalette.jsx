@@ -7,14 +7,15 @@ export default function RhythmPalette({ rhythms, activeRhythmId, onSelectRhythm,
 
   return (
     <Box sx={{ 
-      width: '30%', // Reducido al 30% 
-      minWidth: '320px',
+      width: { xs: '100%', md: '30%' }, 
+      minWidth: { xs: '250px', md: '320px' },
       maxWidth: '800px',
       borderRight: '1px solid var(--bg-main)',
       display: 'flex', 
       flexDirection: 'column',
       bgcolor: 'var(--bg-surface)',
-      overflowY: 'auto'
+      overflowY: 'auto',
+      height: '100%'
     }}>
       <Box sx={{ p: 2, height: 40, borderBottom: '1px solid var(--bg-surface-elevated)', display: 'flex', alignItems: 'center', boxSizing: 'border-box' }}>
         <Typography variant="caption" sx={{ color: 'var(--text-secondary)', fontWeight: 'bold', letterSpacing: '0.1em' }}>

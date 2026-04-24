@@ -6,6 +6,7 @@ import StopRounded from '@mui/icons-material/StopRounded';
 import FileUploadRounded from '@mui/icons-material/FileUploadRounded';
 import DownloadRounded from '@mui/icons-material/DownloadRounded';
 import CreateNewFolderRounded from '@mui/icons-material/CreateNewFolderRounded';
+import MenuRounded from '@mui/icons-material/MenuRounded';
 
 export default function Toolbar({ 
   isPlaying, 
@@ -17,7 +18,9 @@ export default function Toolbar({
   currentTime,
   duration,
   onExportProject,
-  onImportProject
+  onImportProject,
+  onOpenPalette,
+  isMobile
 }) {
   const fileInputRef = useRef(null);
   const jsonInputRef = useRef(null);
@@ -41,10 +44,22 @@ export default function Toolbar({
       alignItems: 'center', 
       justifyContent: 'space-between', 
       width: '100%',
-      color: 'var(--text-primary)'
+      color: 'var(--text-primary)',
+      flexWrap: 'wrap',
+      gap: 1
     }}>
+      {/* Drawer Toggle on Mobile */}
+      {isMobile && (
+        <IconButton 
+          onClick={onOpenPalette} 
+          sx={{ color: 'var(--text-primary)', bgcolor: 'var(--bg-surface)', '&:hover': { bgcolor: 'var(--color-accent)' } }}
+        >
+          <MenuRounded />
+        </IconButton>
+      )}
+
       {/* Carga de Archivo */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
         <input
           type="file"
           accept="audio/*"
@@ -65,13 +80,15 @@ export default function Toolbar({
             color: 'var(--text-primary)',
             '&:hover': { bgcolor: 'var(--color-accent)', color: '#000' },
             textTransform: 'none',
-            borderRadius: '8px'
+            borderRadius: '8px',
+            minWidth: isMobile ? 'auto' : undefined,
+            px: isMobile ? 1 : 2
           }}
         >
-          Cargar Track
+          {!isMobile && "Cargar Track"}
         </Button>
-        <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
-          {duration > 0 ? `${formatTime(currentTime)} / ${formatTime(duration)}` : 'No track loaded'}
+        <Typography variant="body2" sx={{ color: 'var(--text-secondary)', fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
+          {duration > 0 ? `${formatTime(currentTime)} / ${formatTime(duration)}` : 'No track'}
         </Typography>
       </Box>
 
@@ -93,7 +110,7 @@ export default function Toolbar({
       </Box>
 
       {/* BPM Input y Extras de UI */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 3 } }}>
         
         {/* Controles del Proyecto JSON */}
         <Box sx={{ display: 'flex', gap: 1 }}>
@@ -109,38 +126,37 @@ export default function Toolbar({
           />
           <Button 
             size="small"
-            startIcon={<CreateNewFolderRounded fontSize="small" />}
             onClick={() => jsonInputRef.current?.click()}
-            sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--text-primary)', bgcolor: 'rgba(255,255,255,0.05)' }, textTransform: 'none' }}
+            sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--text-primary)', bgcolor: 'rgba(255,255,255,0.05)' }, textTransform: 'none', minWidth: isMobile ? 'auto' : undefined }}
           >
-            Abrir
+            {isMobile ? <CreateNewFolderRounded fontSize="small" /> : <><CreateNewFolderRounded fontSize="small" sx={{ mr: 1 }} /> Abrir</>}
           </Button>
           <Button 
             size="small"
-            startIcon={<DownloadRounded fontSize="small" />}
             onClick={onExportProject}
-            sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--color-accent)', bgcolor: 'rgba(255,255,255,0.05)' }, textTransform: 'none' }}
+            sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--color-accent)', bgcolor: 'rgba(255,255,255,0.05)' }, textTransform: 'none', minWidth: isMobile ? 'auto' : undefined }}
           >
-            Guardar JSON
+            {isMobile ? <DownloadRounded fontSize="small" /> : <><DownloadRounded fontSize="small" sx={{ mr: 1 }} /> Guardar JSON</>}
           </Button>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant="subtitle2" sx={{ color: 'var(--text-secondary)' }}>BPM:</Typography>
+          <Typography variant="subtitle2" sx={{ color: 'var(--text-secondary)', display: { xs: 'none', sm: 'block' } }}>BPM:</Typography>
           <input 
             type="number" 
             value={bpm}
             onChange={(e) => onBpmChange(e.target.value)}
             style={{ 
-              width: '60px', 
+              width: '50px', 
               background: 'var(--bg-main)', 
               border: '1px solid var(--bg-surface-elevated)',
               color: 'var(--color-accent)',
-              padding: '4px 8px',
+              padding: '4px',
               borderRadius: '4px',
               textAlign: 'center',
               fontWeight: 'bold',
-              outline: 'none'
+              outline: 'none',
+              fontSize: '12px'
             }} 
           />
         </Box>

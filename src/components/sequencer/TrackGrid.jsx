@@ -38,11 +38,12 @@ export default function TrackGrid({ sections, rhythms, currentStep, pixelPositio
         position: 'sticky',
         top: 0,
         bgcolor: 'var(--bg-surface)',
-        zIndex: 5
+        zIndex: 5,
+        minWidth: 'max-content'
       }}>
         {/* Renderizamos la regla (ahora limitada a 10 bloques por renglón máximo) */}
         {Array.from({ length: 10 }).map((_, i) => (
-           <Box key={i} sx={{ width: CELL_WIDTH, display: 'flex', justifyContent: 'center', borderLeft: i === 0 ? 'none' : '1px solid var(--bg-surface-elevated)', height: '100%', boxSizing: 'border-box', alignItems:'center' }}>
+           <Box key={i} sx={{ width: CELL_WIDTH, minWidth: CELL_WIDTH, flexShrink: 0, display: 'flex', justifyContent: 'center', borderLeft: i === 0 ? 'none' : '1px solid var(--bg-surface-elevated)', height: '100%', boxSizing: 'border-box', alignItems:'center' }}>
              <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{i + 1}</span>
            </Box>
         ))}
@@ -75,7 +76,7 @@ export default function TrackGrid({ sections, rhythms, currentStep, pixelPositio
             }}>
               
               {rows.map((rowCells, rowIdx) => (
-                 <Box key={rowIdx} sx={{ display: 'flex', height: CELL_HEIGHT, position: 'relative' }}>
+                 <Box key={rowIdx} sx={{ display: 'flex', height: CELL_HEIGHT, position: 'relative', width: 'max-content' }}>
                     
                     {/* Playhead Local para este renglón en específico */}
                     {isThisSectionActive && playheadRowIdx === rowIdx && (
